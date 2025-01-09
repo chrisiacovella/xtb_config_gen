@@ -8,7 +8,9 @@ status = {}
 with SqliteDict("tmqm.db", tablename="status", autocommit=True) as tmqm_db:
     with h5py.File(filepath, "r") as f:
         keys = list(f.keys())
-        for key in keys:
+        import tqdm as tdqm
+
+        for key in tdqm(keys):
             # status[key] = False
             tmqm_db[key] = "not_submitted"
 

@@ -8,37 +8,40 @@ from loguru import logger
 filepath = "/home/cri/datasets/hdf5_files/tmqm_dataset_v0.hdf5"
 from utils import OpenWithLock
 
-data_input = None
-with OpenWithLock(f"status.lockfile", "w") as lock_file:
-    with SqliteDict("tmqm.db", tablename="status", autocommit=True) as status_db:
-        keys = list(status_db.keys())
-        for i in range(len(keys) - 1, 0, -1):
-            key = keys[i]
-            if status_db[key] == "not_submitted":
-                with h5py.File(filepath, "r") as f:
-                    data_input = load_config(f, key)
+from tqdm import tqdm
 
-                status_db[key] = "submitted"
-                break
+for jj in tqdm(range(1, 1000)):
+    data_input = None
+    with OpenWithLock(f"status.lockfile", "w") as lock_file:
+        with SqliteDict("tmqm.db", tablename="status", autocommit=True) as status_db:
+            keys = list(status_db.keys())
+            for i in range(len(keys) - 1, 0, -1):
+                key = keys[i]
+                if status_db[key] == "not_submitted":
+                    with h5py.File(filepath, "r") as f:
+                        data_input = load_config(f, key)
 
-logger.debug(f"starting: {data_input.name}")
-logger.debug(f"n_atoms:  {data_input.geometry.shape[1]}")
+                    status_db[key] = "submitted"
+                    break
 
-start = time()
-xtb_properties = run_xtb_calc(data_input)
-end = time()
+    logger.debug(f"starting: {data_input.name}")
+    logger.debug(f"n_atoms:  {data_input.geometry.shape[1]}")
 
-logger.debug(f"name: {data_input.name}")
-logger.debug(f"n_atoms:  {data_input.geometry.shape[1]}")
-logger.info(f"Time taken: {end-start}")
+    start = time()
+    xtb_properties = run_xtb_calc(data_input)
+    end = time()
 
-with SqliteDict("tmqm.db", tablename="results", autocommit=True) as results_db:
-    results_db[data_input.name] = xtb_properties
+    logger.debug(f"name: {data_input.name}")
+    logger.debug(f"n_atoms:  {data_input.geometry.shape[1]}")
+    logger.info(f"Time taken: {end-start}")
 
-with OpenWithLock(f"status.lockfile", "w") as lock_file:
-    with SqliteDict("tmqm.db", tablename="status", autocommit=True) as status_db:
+    with SqliteDict("tmqm.db", tablename="results", autocommit=True) as results_db:
+        results_db[data_input.name] = xtb_properties
 
-        status_db[data_input.name] = "completed"
+    with OpenWithLock(f"status.lockfile", "w") as lock_file:
+        with SqliteDict("tmqm.db", tablename="status", autocommit=True) as status_db:
+
+            status_db[data_input.name] = "completed"
 
 # with OpenWithLock(f"{filepath}.lockfile", "w") as lock_file:
 #
