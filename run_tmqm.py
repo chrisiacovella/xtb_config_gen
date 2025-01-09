@@ -20,16 +20,16 @@ with OpenWithLock(f"status.lockfile", "w") as lock_file:
                 status_db[key] = "submitted"
                 break
 
-print("starting: ", data_input.name)
-print("n_atoms: ", data_input.geometry.shape[1])
+logger.debug(f"starting: {data_input.name}")
+logger.debug(f"n_atoms:  {data_input.geometry.shape[1]}")
 
 start = time()
 xtb_properties = run_xtb_calc(data_input)
 end = time()
 
-print("name: ", data_input.name)
-print("n_atoms: ", xtb_properties.geometry.shape[1])
-print(f"Time taken: {end-start}")
+logger.debug(f"name: {data_input.name}")
+logger.debug(f"n_atoms:  {data_input.geometry.shape[1]}")
+logger.info(f"Time taken: {end - start}")
 
 with SqliteDict("tmqm.db", tablename="results", autocommit=True) as results_db:
     results_db[data_input.name] = xtb_properties
