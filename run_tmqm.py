@@ -3,7 +3,7 @@ from time import time
 import h5py
 import json
 from sqlitedict import SqliteDict
-
+from loguru import logger
 
 filepath = "/home/cri/datasets/hdf5_files/tmqm_dataset_v0.hdf5"
 from utils import OpenWithLock
