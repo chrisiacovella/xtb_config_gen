@@ -1,3 +1,6 @@
+from loguru import logger
+
+
 def lock_file(file_handle):
     """
     Locks the file stream for exclusive access using fcntl.
