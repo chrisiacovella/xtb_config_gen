@@ -144,7 +144,7 @@ def run_xtb_calc(
         positions=data_input.geometry.to("angstrom").magnitude.reshape(n_atoms, 3),
     )
 
-    mol.set_calculator(calc_a1)
+    mol.calc = calc_a1
 
     data_point = get_xtb_properties(mol)
     datapoints.append(data_point)
@@ -154,7 +154,7 @@ def run_xtb_calc(
     # we need to take a timestep of 1 fs, rather than 4 fs.
     # Since we want to get some fluctuations in bond lengths, not only just different configurations, running without constraints is better.
 
-    mol.set_calculator(calc_a2)
+    mol.calc = calc_a2
 
     if output_trajectory:
         traj = Trajectory(f"{data_input.name}.traj", "w", mol)
@@ -203,9 +203,10 @@ def run_xtb_calc(
             positions=mol.get_positions(),
         )
         # We will only store properties that come from accuracy = 1
-        mol_for_prop.set_calculator(calc_a1)
+        mol_for_prop.calc = calc_a1
         data_point = get_xtb_properties(mol_for_prop)
         datapoints.append(data_point)
+        logger.info(f"Completed repeat {i} of {number_of_repeats}")
 
     # process all the invididual data points into a single record
     geometry = datapoints[0].geometry.reshape(1, n_atoms, 3)

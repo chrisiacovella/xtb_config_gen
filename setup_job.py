@@ -10,7 +10,7 @@ with SqliteDict("tmqm.db", tablename="status", autocommit=True) as tmqm_db:
         keys = list(f.keys())
         for key in keys:
             # status[key] = False
-            tmqm_db[key] = False
+            tmqm_db[key] = "not_submitted"
 
 
 # import json

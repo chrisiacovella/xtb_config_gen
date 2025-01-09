@@ -8,16 +8,19 @@ from sqlitedict import SqliteDict
 filepath = "/home/cri/datasets/hdf5_files/tmqm_dataset_v0.hdf5"
 from utils import OpenWithLock
 
+data_input = None
 with OpenWithLock(f"status.lockfile", "w") as lock_file:
     with SqliteDict("tmqm.db", tablename="status", autocommit=True) as status_db:
         for key in status_db.keys():
 
-            if not status_db[key]:
+            if not status_db[key] == "not_submitted":
                 with h5py.File(filepath, "r") as f:
                     data_input = load_config(f, key)
 
-            status_db[key] = True
-            break
+                status_db[key] = "submitted"
+                break
+
+print("starting: ", data_input.name)
 
 start = time()
 xtb_properties = run_xtb_calc(data_input)
@@ -30,6 +33,10 @@ print(f"Time taken: {end-start}")
 with SqliteDict("tmqm.db", tablename="results", autocommit=True) as results_db:
     results_db[data_input.name] = xtb_properties
 
+with OpenWithLock(f"status.lockfile", "w") as lock_file:
+    with SqliteDict("tmqm.db", tablename="status", autocommit=True) as status_db:
+
+        status_db[data_input.name] = "completed"
 
 # with OpenWithLock(f"{filepath}.lockfile", "w") as lock_file:
 #
