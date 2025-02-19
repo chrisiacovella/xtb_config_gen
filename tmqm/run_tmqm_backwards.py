@@ -12,8 +12,8 @@ from tqdm import tqdm
 
 for jj in tqdm(range(1, 10)):
     data_input = None
-    with OpenWithLock(f"status.lockfile", "w") as lock_file:
-        with SqliteDict("tmqm.db", tablename="status", autocommit=True) as status_db:
+    with OpenWithLock(f"../status.lockfile", "w") as lock_file:
+        with SqliteDict("../tmqm.db", tablename="status", autocommit=True) as status_db:
             keys = list(status_db.keys())
             for i in range(len(keys) - 1, 0, -1):
                 key = keys[i]
@@ -35,11 +35,11 @@ for jj in tqdm(range(1, 10)):
     logger.debug(f"n_atoms:  {data_input.geometry.shape[1]}")
     logger.info(f"Time taken: {end-start}")
 
-    with SqliteDict("tmqm.db", tablename="results", autocommit=True) as results_db:
+    with SqliteDict("../tmqm.db", tablename="results", autocommit=True) as results_db:
         results_db[data_input.name] = xtb_properties
 
-    with OpenWithLock(f"status.lockfile", "w") as lock_file:
-        with SqliteDict("tmqm.db", tablename="status", autocommit=True) as status_db:
+    with OpenWithLock(f"../status.lockfile", "w") as lock_file:
+        with SqliteDict("../tmqm.db", tablename="status", autocommit=True) as status_db:
 
             status_db[data_input.name] = "completed"
 

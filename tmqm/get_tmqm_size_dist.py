@@ -1,5 +1,5 @@
 import h5py
-from xtb_config_gen import load_config, run_xtb_calc
+from xtb_config_gen import load_config
 from matplotlib import pyplot as plt
 
 filepath = "/home/cri/datasets/hdf5_files/tmqm_dataset_v0.hdf5"
