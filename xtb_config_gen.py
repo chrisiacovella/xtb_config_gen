@@ -12,6 +12,12 @@ ev_to_joules = 1.602176634e-19
 
 @dataclass
 class DataPointFromHDF5:
+    """
+    dataclass for storing the data read from the modelforge HDF5 file
+
+    designed specifically to work with the tmqm hdf5 file
+    """
+
     name: str
     n_configs: int
     spin_multiplicity: np.ndarray
@@ -23,6 +29,7 @@ class DataPointFromHDF5:
 
 @dataclass
 class DataPoint:
+
     name: str
     n_configs: int
     spin_multiplicity: np.ndarray
@@ -38,7 +45,7 @@ class DataPoint:
 
 def load_config(file_handle, key: str):
     """
-    Load the data for a give key from the HDF5 file.
+    Load the data for a give key from the modelforge HDF5 file.
 
     parameters
     ----------
