@@ -10,7 +10,7 @@ from utils import OpenWithLock
 
 from tqdm import tqdm
 
-for jj in tqdm(range(1, 1000)):
+for jj in tqdm(range(1, 10)):
     data_input = None
     with OpenWithLock(f"status.lockfile", "w") as lock_file:
         with SqliteDict("tmqm.db", tablename="status", autocommit=True) as status_db:

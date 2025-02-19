@@ -38,28 +38,3 @@ with OpenWithLock(f"status.lockfile", "w") as lock_file:
     with SqliteDict("tmqm.db", tablename="status", autocommit=True) as status_db:
 
         status_db[data_input.name] = "completed"
-
-# with OpenWithLock(f"{filepath}.lockfile", "w") as lock_file:
-#
-#     with h5py.File(filepath, "r") as f:
-#         keys = list(f.keys())
-
-#     with SqliteDict(
-#             "tmqm.db",
-#             tablename="tmqm",
-#             autocommit=True,
-#     ) as tmqm_db:
-#         for key in keys:
-#             if key not in tmqm_db:
-#                 data_input = load_config(f, key)
-#
-#                 xtb_properties = run_xtb_calc(data_input)
-#                 tmqm_db[key] = xtb_properties
-# data_input = load_config(f, keys[0])
-#
-# start = time()
-# xtb_properties = run_xtb_calc(data_input)
-# end = time()
-#
-# print("n_atoms: ", xtb_properties.geometry.shape[1])
-# print(f"Time taken: {end-start}")
