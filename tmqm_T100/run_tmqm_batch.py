@@ -24,7 +24,7 @@ logger.debug(f"starting: {data_input.name}")
 logger.debug(f"n_atoms:  {data_input.geometry.shape[1]}")
 
 start = time()
-xtb_properties = run_xtb_calc(data_input)
+xtb_properties = run_xtb_calc(data_input, number_of_repeats=10)
 end = time()
 
 logger.debug(f"name: {data_input.name}")
